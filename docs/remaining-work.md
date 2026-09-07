@@ -21,7 +21,7 @@ This list preserves the difference between the requested full product and the wo
 
 ## Distribution gate
 
-- Publish the reviewed clean source to the owner's chosen GitHub repository/visibility.
+- Reviewed source is published in the [public repository](https://github.com/fulks89-hub/session-observatory) and a separate private development repository. Both initially contain the same sanitized source; local session data is excluded. See [publication privacy boundaries](privacy.md).
 - Exercise installation on a second machine with no Observatory/Mission Control.
 - Broaden browser coverage beyond the verified local board, session drawer, sample evaluation, and isolated preview. Desktop screenshots and 390/768-pixel overflow checks passed after recovering an initially detached browser connection. Native application click-through remains a separate unresolved gate.
 - Package/sign native installers only after native integration behavior is proven. The current source installation is functional; no signed desktop installer or startup service is supplied.
