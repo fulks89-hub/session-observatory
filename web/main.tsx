@@ -32,6 +32,7 @@ import {
   X,
 } from 'lucide-react';
 import type { Session, SkillSuite, Report } from '../src/types.ts';
+import { nativeThreadHref } from '../src/navigation.ts';
 import './style.css';
 const labels: Record<string, string> = {
   working: 'Working',
@@ -165,11 +166,16 @@ function App() {
   const navigate = (next: string) => {
     setPage(next);
     setSelected(null);
+    window.scrollTo({ top: 0, behavior: 'auto' });
   };
   return (
     <div className="app-shell">
       <aside className="sidebar">
-        <button className="brand" onClick={() => navigate('queue')}>
+        <button
+          className="brand"
+          aria-label="Session Observatory"
+          onClick={() => navigate('queue')}
+        >
           <span className="brand-symbol">
             <Layers3 size={24} />
           </span>
@@ -193,6 +199,7 @@ function App() {
           ].map(([id, label, Icon, count]: any) => (
             <button
               key={id}
+              aria-label={label}
               className={page === id ? 'nav-item active' : 'nav-item'}
               onClick={() => navigate(id)}
             >
@@ -210,6 +217,7 @@ function App() {
           ].map(([id, label, Icon]: any) => (
             <button
               key={id}
+              aria-label={label}
               className={page === id ? 'nav-item active' : 'nav-item'}
               onClick={() => navigate(id)}
             >
@@ -1119,10 +1127,7 @@ function SessionDrawer({
     return () => document.removeEventListener('keydown', h);
   }, []);
   const runtime = s.runtime;
-  const href =
-    s.provenance !== 'demo' && s.provider === 'codex'
-      ? `codex://threads/${encodeURIComponent(s.sourceId)}`
-      : null;
+  const href = nativeThreadHref(s);
   return (
     <div className="drawer-backdrop" onClick={onClose}>
       <aside

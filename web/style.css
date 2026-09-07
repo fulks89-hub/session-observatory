@@ -1863,3 +1863,46 @@ td > span:not(.split):not(.pass):not(.fail):not(.muted) {
     transition: none !important;
   }
 }
+@media (max-width: 520px) {
+  .topbar {
+    padding: 0 12px;
+    gap: 8px;
+  }
+  .breadcrumb {
+    font-size: 0;
+    gap: 0;
+  }
+  .breadcrumb strong {
+    font-size: 12px;
+  }
+  .breadcrumb svg {
+    display: none;
+  }
+  .heading-row {
+    flex-direction: column;
+    gap: 17px;
+  }
+  .stat {
+    grid-template-columns: 1fr;
+    padding: 14px 12px;
+  }
+  .stat-icon {
+    display: none;
+  }
+  .stat-label {
+    grid-column: 1;
+    font-size: 11px;
+  }
+  .table-wrap table {
+    min-width: 620px;
+  }
+  .table-wrap td:first-child {
+    min-width: 250px;
+  }
+  .tabs {
+    gap: 18px;
+  }
+  .tab {
+    font-size: 12px;
+  }
+}

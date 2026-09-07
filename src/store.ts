@@ -34,6 +34,24 @@ export class Store {
       correctionCount: old?.correctionCount ?? 0,
       skill: old?.skill,
     };
+    if (old && session.truncated) {
+      const messages = new Map(
+        [...old.messages, ...session.messages].map((m) => [`${m.role}:${m.text}`, m]),
+      );
+      next.messages = [...messages.values()]
+        .sort((a, b) => Date.parse(a.at) - Date.parse(b.at))
+        .slice(-50);
+      const oldLatest = old.messages.filter((m) => m.role === 'assistant').at(-1);
+      const newLatest = session.messages.filter((m) => m.role === 'assistant').at(-1);
+      if (oldLatest && (!newLatest || Date.parse(oldLatest.at) > Date.parse(newLatest.at)))
+        next.latest = old.latest;
+      if (!next.goal) next.goal = old.goal;
+      if (!next.tasks.length) next.tasks = old.tasks;
+      if (Date.parse(old.updatedAt) > Date.parse(next.updatedAt)) {
+        next.updatedAt = old.updatedAt;
+        next.runtime = old.runtime;
+      }
+    }
     if (
       old?.provenance === 'hook' &&
       session.provenance === 'history' &&

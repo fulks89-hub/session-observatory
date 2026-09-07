@@ -6,7 +6,8 @@ import { fileURLToPath } from 'node:url';
 import { homedir } from 'node:os';
 import { Store } from './store.ts';
 import { Collector, providers } from './collector.ts';
-import { effectiveRuntime, safeId, correctionSignals } from './normalize.ts';
+import { effectiveRuntime, correctionSignals } from './normalize.ts';
+import { nativeThreadHref } from './navigation.ts';
 import {
   evaluateArtifacts,
   validateSuite,
@@ -89,18 +90,13 @@ export async function createApp(
       try {
         if (req.method === 'GET' && path === '/api/state') {
           const demo = url.searchParams.get('demo') === '1';
-          const sessions = db
-            .sessions(demo)
-            .map((s) => ({
-              ...s,
-              messages: undefined,
-              sourcePath: undefined,
-              runtime: effectiveRuntime(s),
-              nativeHref:
-                s.provenance !== 'demo' && s.provider === 'codex' && safeId(s.sourceId)
-                  ? `codex://threads/${encodeURIComponent(s.sourceId)}`
-                  : null,
-            }));
+          const sessions = db.sessions(demo).map((s) => ({
+            ...s,
+            messages: undefined,
+            sourcePath: undefined,
+            runtime: effectiveRuntime(s),
+            nativeHref: nativeThreadHref(s),
+          }));
           return json(res, 200, {
             sessions,
             connections: collector.connections(),

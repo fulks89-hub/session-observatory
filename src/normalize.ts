@@ -24,13 +24,11 @@ export function cleanText(text: string): string {
     .slice(0, 14000);
 }
 export function tasksFrom(text: string, evidence: string): Task[] {
-  return [...text.matchAll(/^\s*[-*]\s+\[([ xX])\]\s+(.+)$/gm)]
-    .slice(0, 30)
-    .map((m) => ({
-      text: m[2].slice(0, 300),
-      state: m[1].trim() ? 'completed' : 'pending',
-      evidence,
-    }));
+  return [...text.matchAll(/^\s*[-*]\s+\[([ xX])\]\s+(.+)$/gm)].slice(0, 30).map((m) => ({
+    text: m[2].slice(0, 300),
+    state: m[1].trim() ? 'completed' : 'pending',
+    evidence,
+  }));
 }
 export function parseTranscript(
   provider: Provider,
@@ -156,7 +154,7 @@ export function parseTranscript(
     title:
       (goal || latest)
         .split('\n')
-        .find((l) => l.trim())
+        .find((l) => l.trim() && !/^(?:enter\s+)?plan mode:?\s*$/i.test(l.trim()))
         ?.slice(0, 100) || 'Untitled session',
     goal: goal.slice(0, 700),
     latest: latest.slice(0, 1200),

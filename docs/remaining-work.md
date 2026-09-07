@@ -23,6 +23,6 @@ This list preserves the difference between the requested full product and the wo
 
 - Publish the reviewed clean source to the owner's chosen GitHub repository/visibility.
 - Exercise installation on a second machine with no Observatory/Mission Control.
-- Complete browser interaction and responsive screenshot QA. The local page's initial accessibility tree rendered, but subsequent browser automation reported an unattached debugger, preventing a complete UI walkthrough in this environment.
+- Broaden browser coverage beyond the verified local board, session drawer, sample evaluation, and isolated preview. Desktop screenshots and 390/768-pixel overflow checks passed after recovering an initially detached browser connection. Native application click-through remains a separate unresolved gate.
 - Package/sign native installers only after native integration behavior is proven. The current source installation is functional; no signed desktop installer or startup service is supplied.
 - Narrated demo: deferred; no narration generated or uploaded in this build.

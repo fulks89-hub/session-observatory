@@ -7,6 +7,7 @@ import {
   correctionSignals,
 } from '../src/normalize.ts';
 import { Store } from '../src/store.ts';
+import { nativeThreadHref } from '../src/navigation.ts';
 const at = '2026-09-07T10:00:00Z';
 const lines = (rows: unknown[]) => rows.map((r) => JSON.stringify(r)).join('\n');
 test('Codex separates completed turns from accepted work, preserves explicit tasks and session identity', () => {
@@ -145,4 +146,36 @@ test('correction suggestions do not treat ordinary initial requirements as failu
   });
   assert.equal(correctionSignals([s])[0].category, 'Layout');
   assert.equal(correctionSignals([s])[0].skill, null);
+});
+test('a truncated rescan cannot replace a newer cached update with an old head excerpt', () => {
+  const db = new Store(':memory:');
+  const session = normalizeHook('codex', {
+    session_id: 'large',
+    event: 'Stop',
+    last_assistant_message: 'The current update',
+  });
+  session.provenance = 'history';
+  db.save(session);
+  db.save({
+    ...session,
+    truncated: true,
+    latest: 'An old update',
+    updatedAt: at,
+    messages: [{ role: 'assistant', text: 'An old update', at, id: 'old' }],
+  });
+  assert.equal(db.get(session.id)?.latest, 'The current update');
+  assert.equal(db.get(session.id)?.updatedAt, session.updatedAt);
+  db.close();
+});
+test('native links cannot select reserved routes or another application from transcript input', () => {
+  for (const sourceId of ['new', '..', 'settings', 'https://example.com', 'one?prompt=execute'])
+    assert.equal(nativeThreadHref({ sourceId, provider: 'codex', provenance: 'history' }), null);
+  assert.equal(
+    nativeThreadHref({
+      sourceId: '12345678-1234-1234-1234-123456789abc',
+      provider: 'codex',
+      provenance: 'history',
+    }),
+    'codex://threads/12345678-1234-1234-1234-123456789abc',
+  );
 });
