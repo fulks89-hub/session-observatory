@@ -9,6 +9,8 @@ A standalone local review board for coding-agent sessions, with a bounded skill 
 Use Node.js 22.18 or newer. This revision was exercised on macOS with Node 26.7.0; CI also targets Node 22 and 24.
 
 ```sh
+git clone https://github.com/fulks89-hub/session-observatory.git
+cd session-observatory
 npm ci --ignore-scripts
 npm run verify
 npm start
@@ -111,7 +113,9 @@ The bridge writes small local observation files and emits no model context, stdo
 
 ## Data and distribution
 
-Session observations, user feedback, suites, and reports live in the private local SQLite database outside the repository. Application data directories use restricted filesystem permissions. This is not application-level encryption; use appropriate device protection for work data. Pausing a connection preserves observations. The API also supports explicitly forgetting a provider's collected sessions; source transcripts are never deleted.
+Session observations, user feedback, suites, and reports live in the private local SQLite database outside the repository. Newly created application data directories use restricted filesystem permissions. This is not application-level encryption; use appropriate device protection for work data. Pausing a connection preserves observations. The API also supports explicitly forgetting a provider's collected sessions; source transcripts are never deleted.
+
+Exported reports and Promptfoo drafts can contain full outputs, prompts, or skill text. The transcript token filter is best-effort and does not anonymize all personal or confidential content. Review exports before sharing. See [privacy boundaries and publication audit](docs/privacy.md).
 
 The server checks Host, Origin, session cookies, and same-origin JSON mutations. Do not expose the port through a tunnel or bind it to a public interface. Summaries/correction heuristics do not have tools, and model-generated HTML never executes on the host.
 

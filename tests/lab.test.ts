@@ -6,9 +6,61 @@ import {
   validateSuite,
   runModels,
   synthesizeSuite,
+  modelText,
 } from '../src/lab.ts';
 import type { SkillSuite } from '../src/types.ts';
 import { createServer } from 'node:http';
+test('model credentials use headers and provider error bodies are not exposed', async () => {
+  const requests: { headers: any; body: string; url: string }[] = [];
+  const server = createServer(async (req, res) => {
+    let body = '';
+    for await (const chunk of req) body += chunk;
+    requests.push({ headers: req.headers, body, url: req.url! });
+    res.writeHead(401, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: 'PRIVATE_PROVIDER_DIAGNOSTIC' }));
+  });
+  await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve));
+  try {
+    const port = (server.address() as { port: number }).port;
+    for (const kind of ['openai-compatible', 'anthropic'] as const) {
+      await assert.rejects(
+        modelText(
+          {
+            kind,
+            endpoint: `http://127.0.0.1:${port}/model`,
+            model: 'mock',
+            apiKey: 'test-credential-only',
+            maxCalls: 1,
+          },
+          'test skill',
+          'test request',
+        ),
+        { message: 'Model request failed (HTTP 401).' },
+      );
+    }
+    assert.equal(requests[0].headers.authorization, 'Bearer test-credential-only');
+    assert.equal(requests[1].headers['x-api-key'], 'test-credential-only');
+    assert.ok(
+      requests.every((r) => !r.body.includes('test-credential-only') && r.url === '/model'),
+    );
+    await assert.rejects(
+      modelText(
+        {
+          kind: 'openai-compatible',
+          endpoint: `http://user:password@127.0.0.1:${port}/model`,
+          model: 'mock',
+          maxCalls: 1,
+        },
+        'test',
+        'test',
+      ),
+      /Credentials must not be placed in the endpoint URL/,
+    );
+    assert.equal(requests.length, 2);
+  } finally {
+    await new Promise<void>((resolve) => server.close(() => resolve()));
+  }
+});
 const suite = (): SkillSuite => ({
   id: 'html',
   name: 'HTML',

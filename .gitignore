@@ -14,3 +14,17 @@ local-suites/
 my-suite.json
 promptfoo-draft.json
 *-evaluation-*.json
+evaluation-*.json
+*-promptfoo.json
+.session-observatory/
+.codex/
+.claude/
+.cursor/
+.npmrc
+.netrc
+*.jsonl
+*.log
+*.har
+*.pem
+*.key
+*.p12
