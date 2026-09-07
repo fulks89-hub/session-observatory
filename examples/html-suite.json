@@ -1,0 +1,129 @@
+{
+  "id": "my-html-skill",
+  "name": "My HTML skill",
+  "revision": "example-v1",
+  "baseline": "Create an HTML executive report from the supplied brief.",
+  "candidate": "Create a complete HTML document. Include a descriptive title, language attribute, a device-width viewport, and an Executive summary section. Give every image an alt attribute. Preserve supplied facts. Validate the document before returning it.",
+  "cases": [
+    {
+      "id": "standard-report",
+      "prompt": "Create a short executive report about the fictional Acorn project.",
+      "split": "train",
+      "checks": [
+        {
+          "id": "title",
+          "label": "Document title",
+          "kind": "html_title",
+          "required": true
+        },
+        {
+          "id": "lang",
+          "label": "Document language",
+          "kind": "html_lang",
+          "required": true
+        },
+        {
+          "id": "viewport",
+          "label": "Mobile viewport declaration",
+          "kind": "viewport",
+          "required": true
+        },
+        {
+          "id": "summary",
+          "label": "Executive summary included",
+          "kind": "contains",
+          "value": "Executive summary",
+          "required": true
+        },
+        {
+          "id": "alt",
+          "label": "Image alt attributes",
+          "kind": "image_alt",
+          "required": true
+        }
+      ],
+      "baselineOutput": "<html><body><h1>Acorn report</h1><p>Work is progressing.</p></body></html>",
+      "candidateOutput": "<!doctype html><html lang=\"en\"><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><title>Acorn project</title><style>body{font:18px system-ui;max-width:60rem;margin:3rem auto;padding:0 1rem;color:#20352f}h1{font-size:2.5rem}section{padding:1rem;background:#edf3ef;border-radius:12px}</style></head><body><h1>Acorn project</h1><section><h2>Executive summary</h2><p>This is a synthetic evaluation artifact, not a report about a real company.</p></section></body></html>"
+    },
+    {
+      "id": "long-report",
+      "prompt": "Create a report for the fictional Harbor project, with an appendix.",
+      "split": "train",
+      "checks": [
+        {
+          "id": "title",
+          "label": "Document title",
+          "kind": "html_title",
+          "required": true
+        },
+        {
+          "id": "lang",
+          "label": "Document language",
+          "kind": "html_lang",
+          "required": true
+        },
+        {
+          "id": "viewport",
+          "label": "Mobile viewport declaration",
+          "kind": "viewport",
+          "required": true
+        },
+        {
+          "id": "summary",
+          "label": "Executive summary included",
+          "kind": "contains",
+          "value": "Executive summary",
+          "required": true
+        },
+        {
+          "id": "alt",
+          "label": "Image alt attributes",
+          "kind": "image_alt",
+          "required": true
+        }
+      ],
+      "baselineOutput": "<html><head><title>Harbor</title></head><body><h1>Harbor report</h1></body></html>",
+      "candidateOutput": "<!doctype html><html lang=\"en\"><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><title>Harbor project</title><style>body{font:18px system-ui;max-width:60rem;margin:3rem auto;padding:0 1rem;color:#20352f}h1{font-size:2.5rem}section{padding:1rem;background:#edf3ef;border-radius:12px}</style></head><body><h1>Harbor project</h1><section><h2>Executive summary</h2><p>This is a synthetic evaluation artifact, not a report about a real company.</p></section></body></html>"
+    },
+    {
+      "id": "unseen-report",
+      "prompt": "Create a report for the fictional Meadow project.",
+      "split": "holdout",
+      "checks": [
+        {
+          "id": "title",
+          "label": "Document title",
+          "kind": "html_title",
+          "required": true
+        },
+        {
+          "id": "lang",
+          "label": "Document language",
+          "kind": "html_lang",
+          "required": true
+        },
+        {
+          "id": "viewport",
+          "label": "Mobile viewport declaration",
+          "kind": "viewport",
+          "required": true
+        },
+        {
+          "id": "summary",
+          "label": "Executive summary included",
+          "kind": "contains",
+          "value": "Executive summary",
+          "required": true
+        },
+        {
+          "id": "alt",
+          "label": "Image alt attributes",
+          "kind": "image_alt",
+          "required": true
+        }
+      ],
+      "baselineOutput": "<html><body><h1>Meadow</h1></body></html>",
+      "candidateOutput": "<!doctype html><html lang=\"en\"><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><title>Meadow project</title><style>body{font:18px system-ui;max-width:60rem;margin:3rem auto;padding:0 1rem;color:#20352f}h1{font-size:2.5rem}section{padding:1rem;background:#edf3ef;border-radius:12px}</style></head><body><h1>Meadow project</h1><section><h2>Executive summary</h2><p>This is a synthetic evaluation artifact, not a report about a real company.</p></section></body></html>"
+    }
+  ]
+}

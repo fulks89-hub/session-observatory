@@ -1,0 +1,37 @@
+{
+  "name": "session-observatory",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "A standalone local session review board and bounded skill evaluation lab.",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "bin": {
+    "session-observatory": "bin/observatory.mjs"
+  },
+  "scripts": {
+    "dev": "node --experimental-strip-types src/server.ts",
+    "start": "node --experimental-strip-types src/server.ts",
+    "build": "vite build",
+    "check": "tsc --noEmit",
+    "test": "node --experimental-strip-types --test tests/*.test.ts",
+    "verify": "npm run check && npm run build && npm test",
+    "demo": "node --experimental-strip-types src/server.ts --demo",
+    "doctor": "node --experimental-strip-types src/cli.ts doctor"
+  },
+  "dependencies": {
+    "lucide-react": "^1.42.0",
+    "parse5": "^8.0.1",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
+  },
+  "devDependencies": {
+    "@types/node": "^26.5.0",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.7",
+    "prettier": "^3.9.6",
+    "typescript": "^7.0.2",
+    "vite": "^8.2.2"
+  }
+}

@@ -1,0 +1,278 @@
+{
+  "id": "10539b4a-105d-46a8-b390-e6759f2ca693",
+  "suiteId": "my-html-skill",
+  "at": "2026-09-07T16:35:11.549Z",
+  "kind": "artifact-check",
+  "baselineHash": "2bfd91560f808f54307a02ccbf10981a2cf277afdefb66b86ed018a15ee99583",
+  "candidateHash": "f3e80dcce32c706f4416c1ae1dc2e2f771db41050a66a9c9fd5db270c2479fb4",
+  "policyHash": "1a8f8645f5479769d09b02bf72753da3d396e2c5c428888b77261161011c7012",
+  "results": [
+    {
+      "caseId": "standard-report",
+      "split": "train",
+      "variant": "baseline",
+      "checks": [
+        {
+          "id": "title",
+          "label": "Document title",
+          "pass": false,
+          "required": true,
+          "detail": "Nonempty document title"
+        },
+        {
+          "id": "lang",
+          "label": "Document language",
+          "pass": false,
+          "required": true,
+          "detail": "Document declares its language"
+        },
+        {
+          "id": "viewport",
+          "label": "Mobile viewport declaration",
+          "pass": false,
+          "required": true,
+          "detail": "Device-width viewport declared; this does not prove responsive layout"
+        },
+        {
+          "id": "summary",
+          "label": "Executive summary included",
+          "pass": false,
+          "required": true,
+          "detail": "Visible document text contains “Executive summary”"
+        },
+        {
+          "id": "alt",
+          "label": "Image alt attributes",
+          "pass": true,
+          "required": true,
+          "detail": "Every image has an alt attribute; quality still needs review"
+        }
+      ],
+      "passed": false,
+      "output": "<html><body><h1>Acorn report</h1><p>Work is progressing.</p></body></html>"
+    },
+    {
+      "caseId": "standard-report",
+      "split": "train",
+      "variant": "candidate",
+      "checks": [
+        {
+          "id": "title",
+          "label": "Document title",
+          "pass": true,
+          "required": true,
+          "detail": "Nonempty document title"
+        },
+        {
+          "id": "lang",
+          "label": "Document language",
+          "pass": true,
+          "required": true,
+          "detail": "Document declares its language"
+        },
+        {
+          "id": "viewport",
+          "label": "Mobile viewport declaration",
+          "pass": true,
+          "required": true,
+          "detail": "Device-width viewport declared; this does not prove responsive layout"
+        },
+        {
+          "id": "summary",
+          "label": "Executive summary included",
+          "pass": true,
+          "required": true,
+          "detail": "Visible document text contains “Executive summary”"
+        },
+        {
+          "id": "alt",
+          "label": "Image alt attributes",
+          "pass": true,
+          "required": true,
+          "detail": "Every image has an alt attribute; quality still needs review"
+        }
+      ],
+      "passed": true,
+      "output": "<!doctype html><html lang=\"en\"><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><title>Acorn project</title><style>body{font:18px system-ui;max-width:60rem;margin:3rem auto;padding:0 1rem;color:#20352f}h1{font-size:2.5rem}section{padding:1rem;background:#edf3ef;border-radius:12px}</style></head><body><h1>Acorn project</h1><section><h2>Executive summary</h2><p>This is a synthetic evaluation artifact, not a report about a real company.</p></section></body></html>"
+    },
+    {
+      "caseId": "long-report",
+      "split": "train",
+      "variant": "baseline",
+      "checks": [
+        {
+          "id": "title",
+          "label": "Document title",
+          "pass": true,
+          "required": true,
+          "detail": "Nonempty document title"
+        },
+        {
+          "id": "lang",
+          "label": "Document language",
+          "pass": false,
+          "required": true,
+          "detail": "Document declares its language"
+        },
+        {
+          "id": "viewport",
+          "label": "Mobile viewport declaration",
+          "pass": false,
+          "required": true,
+          "detail": "Device-width viewport declared; this does not prove responsive layout"
+        },
+        {
+          "id": "summary",
+          "label": "Executive summary included",
+          "pass": false,
+          "required": true,
+          "detail": "Visible document text contains “Executive summary”"
+        },
+        {
+          "id": "alt",
+          "label": "Image alt attributes",
+          "pass": true,
+          "required": true,
+          "detail": "Every image has an alt attribute; quality still needs review"
+        }
+      ],
+      "passed": false,
+      "output": "<html><head><title>Harbor</title></head><body><h1>Harbor report</h1></body></html>"
+    },
+    {
+      "caseId": "long-report",
+      "split": "train",
+      "variant": "candidate",
+      "checks": [
+        {
+          "id": "title",
+          "label": "Document title",
+          "pass": true,
+          "required": true,
+          "detail": "Nonempty document title"
+        },
+        {
+          "id": "lang",
+          "label": "Document language",
+          "pass": true,
+          "required": true,
+          "detail": "Document declares its language"
+        },
+        {
+          "id": "viewport",
+          "label": "Mobile viewport declaration",
+          "pass": true,
+          "required": true,
+          "detail": "Device-width viewport declared; this does not prove responsive layout"
+        },
+        {
+          "id": "summary",
+          "label": "Executive summary included",
+          "pass": true,
+          "required": true,
+          "detail": "Visible document text contains “Executive summary”"
+        },
+        {
+          "id": "alt",
+          "label": "Image alt attributes",
+          "pass": true,
+          "required": true,
+          "detail": "Every image has an alt attribute; quality still needs review"
+        }
+      ],
+      "passed": true,
+      "output": "<!doctype html><html lang=\"en\"><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><title>Harbor project</title><style>body{font:18px system-ui;max-width:60rem;margin:3rem auto;padding:0 1rem;color:#20352f}h1{font-size:2.5rem}section{padding:1rem;background:#edf3ef;border-radius:12px}</style></head><body><h1>Harbor project</h1><section><h2>Executive summary</h2><p>This is a synthetic evaluation artifact, not a report about a real company.</p></section></body></html>"
+    },
+    {
+      "caseId": "unseen-report",
+      "split": "holdout",
+      "variant": "baseline",
+      "checks": [
+        {
+          "id": "title",
+          "label": "Document title",
+          "pass": false,
+          "required": true,
+          "detail": "Nonempty document title"
+        },
+        {
+          "id": "lang",
+          "label": "Document language",
+          "pass": false,
+          "required": true,
+          "detail": "Document declares its language"
+        },
+        {
+          "id": "viewport",
+          "label": "Mobile viewport declaration",
+          "pass": false,
+          "required": true,
+          "detail": "Device-width viewport declared; this does not prove responsive layout"
+        },
+        {
+          "id": "summary",
+          "label": "Executive summary included",
+          "pass": false,
+          "required": true,
+          "detail": "Visible document text contains “Executive summary”"
+        },
+        {
+          "id": "alt",
+          "label": "Image alt attributes",
+          "pass": true,
+          "required": true,
+          "detail": "Every image has an alt attribute; quality still needs review"
+        }
+      ],
+      "passed": false,
+      "output": "<html><body><h1>Meadow</h1></body></html>"
+    },
+    {
+      "caseId": "unseen-report",
+      "split": "holdout",
+      "variant": "candidate",
+      "checks": [
+        {
+          "id": "title",
+          "label": "Document title",
+          "pass": true,
+          "required": true,
+          "detail": "Nonempty document title"
+        },
+        {
+          "id": "lang",
+          "label": "Document language",
+          "pass": true,
+          "required": true,
+          "detail": "Document declares its language"
+        },
+        {
+          "id": "viewport",
+          "label": "Mobile viewport declaration",
+          "pass": true,
+          "required": true,
+          "detail": "Device-width viewport declared; this does not prove responsive layout"
+        },
+        {
+          "id": "summary",
+          "label": "Executive summary included",
+          "pass": true,
+          "required": true,
+          "detail": "Visible document text contains “Executive summary”"
+        },
+        {
+          "id": "alt",
+          "label": "Image alt attributes",
+          "pass": true,
+          "required": true,
+          "detail": "Every image has an alt attribute; quality still needs review"
+        }
+      ],
+      "passed": true,
+      "output": "<!doctype html><html lang=\"en\"><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><title>Meadow project</title><style>body{font:18px system-ui;max-width:60rem;margin:3rem auto;padding:0 1rem;color:#20352f}h1{font-size:2.5rem}section{padding:1rem;background:#edf3ef;border-radius:12px}</style></head><body><h1>Meadow project</h1><section><h2>Executive summary</h2><p>This is a synthetic evaluation artifact, not a report about a real company.</p></section></body></html>"
+    }
+  ],
+  "eligible": true,
+  "reasons": [],
+  "calls": 0
+}
