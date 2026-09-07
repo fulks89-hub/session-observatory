@@ -60,6 +60,8 @@ Export the example format or generate a local template:
 node bin/observatory.mjs example > my-suite.json
 ```
 
+The default local suite, Promptfoo draft, evaluation exports, and `local-suites/` directory are ignored by Git. Keep private requests and skill text in these local paths and review staged files before publishing.
+
 Edit its ID, name, baseline skill text, candidate text, and cases. Each case requires a unique ID, initial request, training/holdout split, and at least one required check. Use a `familyId` for related requests; a family cannot cross splits. Keep synthetic variants in their source family's split. Import through the UI or evaluate saved outputs from the command line:
 
 ```sh

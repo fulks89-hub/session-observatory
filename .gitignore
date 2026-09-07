@@ -10,3 +10,7 @@ coverage/
 playwright-report/
 test-results/
 *.tgz
+local-suites/
+my-suite.json
+promptfoo-draft.json
+*-evaluation-*.json
