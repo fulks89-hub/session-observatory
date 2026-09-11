@@ -1,5 +1,5 @@
 {
-  "name": "session-observatory",
+  "name": "observatory-switchboard",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -8,6 +8,7 @@
     "node": ">=22.18"
   },
   "bin": {
+    "observatory-switchboard": "bin/observatory.mjs",
     "session-observatory": "bin/observatory.mjs"
   },
   "scripts": {

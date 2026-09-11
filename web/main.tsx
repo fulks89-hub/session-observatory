@@ -173,14 +173,14 @@ function App() {
       <aside className="sidebar">
         <button
           className="brand"
-          aria-label="Session Observatory"
+          aria-label="Observatory Switchboard"
           onClick={() => navigate('queue')}
         >
           <span className="brand-symbol">
             <Layers3 size={24} />
           </span>
           <span>
-            session<span className="brand-sub">observatory</span>
+            observatory<span className="brand-sub">switchboard</span>
           </span>
         </button>
         <div className="workspace">

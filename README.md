@@ -1,4 +1,4 @@
-# Session Observatory
+# Observatory Switchboard
 
 A standalone local review board for coding-agent sessions, with a bounded skill evaluation lab. No Mission Control, Observatory repository, cloud account, or hosted database is required.
 
@@ -9,8 +9,8 @@ A standalone local review board for coding-agent sessions, with a bounded skill 
 Use Node.js 22.18 or newer. This revision was exercised on macOS with Node 26.7.0; CI also targets Node 22 and 24.
 
 ```sh
-git clone https://github.com/fulks89-hub/session-observatory.git
-cd session-observatory
+git clone https://github.com/fulks89-hub/observatory-switchboard.git
+cd observatory-switchboard
 npm ci --ignore-scripts
 npm run verify
 npm start
@@ -25,6 +25,12 @@ npm run demo
 ```
 
 Open the printed URL ending in `?demo=1`. There is no automatic login startup service. A different port can be supplied through `PORT`. `OBSERVATORY_DATA_DIR` changes the private data directory, which defaults to `~/.session-observatory`.
+
+## Prove it in your native apps
+
+Use the ready-to-paste [Cursor IDE proof prompt](docs/proof-prompts/cursor.md) or [Claude Desktop Code proof prompt](docs/proof-prompts/claude-desktop-code.md). They separate fixture checks from evidence gathered in the actual application, including five simultaneous sessions and exact-chat navigation.
+
+The product is now **Observatory Switchboard**. Existing installations retain the `session-observatory` command alias, `OBSERVATORY_DATA_DIR` setting, and `~/.session-observatory` data directory for compatibility. The name does not introduce a dependency on Brett's Observatory.
 
 ## What works
 

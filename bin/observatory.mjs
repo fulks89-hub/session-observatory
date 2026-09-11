@@ -14,6 +14,6 @@ const child = spawn(
 );
 child.on('exit', (code) => process.exit(code ?? 1));
 child.on('error', () => {
-  console.error('Unable to start Session Observatory.');
+  console.error('Unable to start Observatory Switchboard.');
   process.exit(1);
 });

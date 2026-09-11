@@ -329,7 +329,7 @@ export async function createApp(
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const app = await createApp({ demo: process.argv.includes('--demo') });
   console.log(
-    `Session Observatory: ${app.origin}${process.argv.includes('--demo') ? '/?demo=1' : ''}\nLocal only. History collection is opt-in in Connections.`,
+    `Observatory Switchboard: ${app.origin}${process.argv.includes('--demo') ? '/?demo=1' : ''}\nLocal only. History collection is opt-in in Connections.`,
   );
   for (const signal of ['SIGINT', 'SIGTERM'])
     process.once(signal, () => {

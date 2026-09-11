@@ -102,7 +102,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
       }
     } else
       console.log(
-        'Session Observatory\n  start | demo\n  doctor\n  hooks codex|claude|cursor    Print a config fragment; never installs it\n  example                    Print an editable suite template\n  evaluate suite.json        Check saved artifacts locally\n  promptfoo suite.json        Export a provider-neutral configuration draft\n  optimize suite.json --approve-model-transfer\n                             Run a bounded candidate/evaluation batch using configured model access',
+        'Observatory Switchboard\n  start | demo\n  doctor\n  hooks codex|claude|cursor    Print a config fragment; never installs it\n  example                    Print an editable suite template\n  evaluate suite.json        Check saved artifacts locally\n  promptfoo suite.json        Export a provider-neutral configuration draft\n  optimize suite.json --approve-model-transfer\n                             Run a bounded candidate/evaluation batch using configured model access',
       );
   } catch (error) {
     console.error(error instanceof Error ? error.message : 'Command failed');
