@@ -1,7 +1,11 @@
+import { Insights } from './Insights.tsx';
+import { CommandComposer } from './CommandComposer.tsx';
 import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import {
   Activity,
+  Flag,
+  BarChart3,
   ArrowDownToLine,
   ArrowLeft,
   ArrowRight,
@@ -134,15 +138,13 @@ function App() {
     s.provenance === 'demo' || Date.now() - Date.parse(s.updatedAt) < 48 * 3600_000;
   const needsReview = (s: Session) => recent(s) && (!s.reviewedAt || s.updatedAt > s.reviewedAt);
   const accepted = (s: Session) => Boolean(s.acceptedAt && s.acceptedAt >= s.updatedAt);
-  const attention = sessions.filter(
-    (s) => ['waiting_input', 'waiting_approval', 'error'].includes(s.runtime) && !accepted(s),
-  );
+  const attention = sessions.filter((s) => (s.attention || s.runtime === 'error') && !accepted(s));
   const waiting = sessions.filter((s) => s.runtime === 'idle' && needsReview(s));
   const working = sessions.filter((s) => s.runtime === 'working');
   const rank = (s: Session) =>
     accepted(s)
       ? 5
-      : ['waiting_input', 'waiting_approval', 'error'].includes(s.runtime)
+      : s.attention || s.runtime === 'error'
         ? 0
         : s.runtime === 'idle' && needsReview(s)
           ? 1
@@ -158,6 +160,7 @@ function App() {
         filter === 'all' ||
         (filter === 'recent' && recent(s)) ||
         (filter === 'attention' && attention.includes(s)) ||
+        (filter === 'flagged' && Boolean(s.attention) && !accepted(s)) ||
         (filter === 'review' && waiting.includes(s)) ||
         (filter === 'working' && s.runtime === 'working') ||
         (filter === 'accepted' && accepted(s)),
@@ -194,6 +197,7 @@ function App() {
         <nav aria-label="Main navigation">
           {[
             ['queue', 'Session board', Layers3, sessions.length],
+            ['insights', 'Usage & skills', BarChart3, null],
             ['opportunities', 'Opportunities', Sparkles, state?.opportunities?.length ?? 0],
             ['lab', 'Skill lab', FlaskConical, null],
           ].map(([id, label, Icon, count]: any) => (
@@ -242,6 +246,7 @@ function App() {
               {
                 {
                   queue: 'Session board',
+                  insights: 'Usage & skills',
                   opportunities: 'Opportunities',
                   lab: 'Skill lab',
                   connections: 'Connections',
@@ -314,6 +319,29 @@ function App() {
                   </button>
                 </div>
               </div>
+              {sessions.some((s) => s.attention) && (
+                <div className="attention-banner" role="status">
+                  <span className="attention-banner-icon">
+                    <Flag size={22} />
+                  </span>
+                  <div>
+                    <strong>
+                      {sessions.filter((s) => s.attention).length}{' '}
+                      {sessions.filter((s) => s.attention).length === 1
+                        ? 'session needs'
+                        : 'sessions need'}{' '}
+                      a look from you
+                    </strong>
+                    <p>
+                      Reply requests and approvals are flagged on their cards. Older or inferred
+                      requests are labeled.
+                    </p>
+                  </div>
+                  <button className="secondary" onClick={() => setFilter('flagged')}>
+                    Show flagged <ArrowRight size={15} />
+                  </button>
+                </div>
+              )}
               <div className="stats">
                 {[
                   [attention.length, 'Need your attention', 'attention', CircleAlert],
@@ -339,6 +367,7 @@ function App() {
                 <div className="tabs">
                   {[
                     ['recent', 'Recent sessions'],
+                    ['flagged', 'Waiting on you'],
                     ['review', 'Review queue'],
                     ['all', 'All history'],
                   ].map(([id, label]) => (
@@ -396,6 +425,13 @@ function App() {
                       className={`session-card ${attention.includes(s) ? 'needs-attention' : ''}`}
                       key={s.id}
                     >
+                      {s.attention && (
+                        <div className={`waiting-flag ${s.attention.confirmed ? '' : 'inferred'}`}>
+                          <Flag size={14} />
+                          <strong>{s.attention.label}</strong>
+                          {!s.attention.confirmed && <small>Suggested</small>}
+                        </div>
+                      )}
                       <div className="card-top">
                         <span className={`provider-mark ${s.provider}`}>
                           {s.provider === 'codex' ? 'C' : s.provider === 'claude' ? '✳' : '↗'}
@@ -456,6 +492,9 @@ function App() {
                 <span>Summaries are local excerpts, with source evidence.</span>
               </div>
             </>
+          )}
+          {page === 'insights' && (
+            <Insights sessions={sessions} openSession={openSession} demo={demo} />
           )}
           {page === 'opportunities' && (
             <>
@@ -998,6 +1037,7 @@ function App() {
       </div>
       {selected && (
         <SessionDrawer
+          key={selected.id}
           session={selected}
           onClose={() => setSelected(null)}
           onAction={(data) =>
@@ -1149,6 +1189,15 @@ function SessionDrawer({
           <span />
           {labels[runtime]}
         </span>
+        {s.attention && (
+          <div className="drawer-attention">
+            <Flag size={20} />
+            <div>
+              <strong>{s.attention.label}</strong>
+              <p>{s.attention.detail}</p>
+            </div>
+          </div>
+        )}
         <h2 id="session-title">{s.title}</h2>
         <div className="drawer-meta">
           <Clock3 size={14} />
@@ -1184,6 +1233,7 @@ function SessionDrawer({
               ? 'Synthetic session: no native chat exists.'
               : 'Exact native-chat navigation is not available for this connector yet.'}
         </p>
+        <CommandComposer session={s} />
         <section className="drawer-section">
           <div className="section-row">
             <h3>

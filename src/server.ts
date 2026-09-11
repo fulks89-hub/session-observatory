@@ -1,3 +1,5 @@
+import { Commands, commandCapability } from './commands.ts';
+import { sessionAttention } from './attention.ts';
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
 import { randomBytes } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
@@ -34,6 +36,7 @@ export async function createApp(
   seedDemo(db);
   if (!db.suite('html-report-example')) db.saveSuite(exampleSuite());
   const collector = new Collector(db, dataDir);
+  const commands = new Commands(db);
   let origin = '';
   const token = randomBytes(32).toString('hex');
   let job: any = null;
@@ -95,6 +98,7 @@ export async function createApp(
             messages: undefined,
             sourcePath: undefined,
             runtime: effectiveRuntime(s),
+            attention: sessionAttention(s),
             nativeHref: nativeThreadHref(s),
           }));
           return json(res, 200, {
@@ -121,18 +125,37 @@ export async function createApp(
         if (req.method === 'GET' && path.startsWith('/api/session/')) {
           const s = db.get(decodeURIComponent(path.slice(13)));
           return s
-            ? json(res, 200, { ...s, runtime: effectiveRuntime(s) })
+            ? json(res, 200, {
+                ...s,
+                runtime: effectiveRuntime(s),
+                attention: sessionAttention(s),
+                commandCapability: commandCapability(s, commands.binary),
+                commands: commands.list(s.id),
+              })
             : json(res, 404, { error: 'Session not found.' });
+        }
+        if (req.method === 'POST' && path === '/api/commands') {
+          const data = await body(req);
+          const session = typeof data.sessionId === 'string' ? db.get(data.sessionId) : undefined;
+          if (!session) throw new Error('Session not found.');
+          const result = commands.send(session, data);
+          return json(res, 202, result);
         }
         if (req.method === 'POST' && path === '/api/connections') {
           const data = await body(req);
           if (!providers.includes(data.provider) || typeof data.enabled !== 'boolean')
             throw new Error('Invalid connection.');
-          db.set(`enabled:${data.provider}`, data.enabled);
           if (!data.enabled && data.forget === true) {
+            if (
+              db
+                .sessions(false)
+                .some((s) => s.provider === data.provider && commands.active.has(s.id))
+            )
+              throw new Error('Wait for running follow-ups before forgetting this provider.');
             db.forget(data.provider);
             collector.fingerprints.clear();
           }
+          db.set(`enabled:${data.provider}`, data.enabled);
           await collector.scan();
           return json(res, 200, { ok: true });
         }
@@ -320,6 +343,7 @@ export async function createApp(
     server,
     close: async () => {
       clearInterval(timer);
+      commands.close();
       await new Promise<void>((r) => server.close(() => r()));
       while (collector.busy) await new Promise((r) => setTimeout(r, 10));
       db.close();

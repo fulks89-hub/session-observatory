@@ -42,6 +42,20 @@ test('local app rejects unauthenticated, cross-origin, and unknown-host API call
     assert.equal(badHost, 403);
     const state: any = await get('/api/state?demo=1');
     assert.equal(state.sessions.length, 5);
+    assert.ok(state.sessions.some((s: any) => s.attention?.kind === 'approval'));
+    assert.ok(state.sessions[0].telemetry.usage.total > 0);
+    assert.equal(
+      (
+        await post('/api/commands', {
+          sessionId: 'codex:demo-auth',
+          text: 'Hello',
+          requestId: '12345678-1234-1234-1234-123456789abc',
+          confirmed: true,
+          expectedUpdatedAt: state.sessions.find((s: any) => s.id === 'codex:demo-auth').updatedAt,
+        })
+      ).status,
+      400,
+    );
     assert.equal(state.connections.filter((c: any) => c.enabled).length, 0);
     assert.equal(
       (await post('/api/session', { id: 'cursor:demo-table', action: 'review' })).status,

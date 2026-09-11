@@ -22,6 +22,7 @@ export function hookConfiguration(
           'SessionStart',
           'UserPromptSubmit',
           'PermissionRequest',
+          'Notification',
           'PostToolUse',
           'Stop',
           'SessionEnd',

@@ -2,7 +2,10 @@ import { Store } from './store.ts';
 import { tasksFrom } from './normalize.ts';
 import type { Session, SkillSuite, Check } from './types.ts';
 export function seedDemo(db: Store) {
-  if (db.setting('demoSeeded', false)) return;
+  if (db.setting('demoSeeded', false)) {
+    seedDemoTelemetry(db);
+    return;
+  }
   const specs: Partial<Session>[] = [
     {
       sourceId: 'demo-report',
@@ -91,6 +94,7 @@ export function seedDemo(db: Store) {
     'html-report@v1',
   );
   db.set('demoSeeded', true);
+  seedDemoTelemetry(db);
 }
 export function exampleSuite(): SkillSuite {
   const checks: Check[] = [
@@ -144,4 +148,34 @@ export function exampleSuite(): SkillSuite {
       },
     ],
   };
+}
+
+function seedDemoTelemetry(db: Store) {
+  if (db.setting('demoTelemetryV1', false)) return;
+  for (const [i, s] of db.sessions(true).entries()) {
+    const input = [82000, 61000, 45000, 32000, 19000][i] ?? 10000;
+    const output = Math.round(input / 7);
+    db.save({
+      ...s,
+      model: s.provider + ' / example model',
+      telemetry: {
+        usage: {
+          input,
+          output,
+          cached: Math.round(input * 0.68),
+          cacheWrite: 0,
+          reasoning: 0,
+          total: input + output,
+          records: 4,
+          partial: false,
+        },
+        userTurns: i + 3,
+        assistantTurns: i + 5,
+        toolCalls: 12 + i * 7,
+        partial: false,
+        skills: s.skill ? [{ name: s.skill, kind: 'invocation', count: 1 }] : [],
+      },
+    });
+  }
+  db.set('demoTelemetryV1', true);
 }

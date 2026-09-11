@@ -10,6 +10,13 @@ This list preserves the difference between the requested full product and the wo
 - Verify waiting-for-input/approval, cancellation, app exit, resume, and multiple profiles against real hooks. No native hook settings were installed during the build.
 - Add a fuller session identity with machine/profile/parent relationships before implementing multi-machine or subagent aggregation.
 
+## Follow-up and insights gate
+
+- Prove a live idle Codex CLI continuation and its visibility in the native desktop window. Automated checks cover routing and receipt handling without model calls.
+- Add supported Claude and Cursor sending after native-session identity and concurrency are proven. Current UI offers draft/copy.
+- Add model-switch-aware usage timelines and account quota integrations. Current totals reflect available transcript records and filter by session last activity.
+- Measure actual review time and skill outcomes; file references and correction correlations do not establish causal efficiency or compliance.
+
 ## Skill lab gate
 
 - Obtain the authorized real HTML skill bundle and original inputs/accepted examples. No actual work skill was inspected or changed.
@@ -23,6 +30,7 @@ This list preserves the difference between the requested full product and the wo
 
 - Reviewed source is published in the [public repository](https://github.com/fulks89-hub/observatory-switchboard) and a separate private development repository. Both initially contain the same sanitized source; local session data is excluded. See [publication privacy boundaries](privacy.md).
 - Exercise installation on a second machine with no Observatory/Mission Control.
+- The blue board, waiting-only filter, Usage & skills provider filter, and demo follow-up composer were exercised in Chromium on September 11. Desktop rendering and 390/768-pixel overflow checks passed with no browser errors.
 - Broaden browser coverage beyond the verified local board, session drawer, sample evaluation, and isolated preview. Desktop screenshots and 390/768-pixel overflow checks passed after recovering an initially detached browser connection. Native application click-through remains a separate unresolved gate.
 - Package/sign native installers only after native integration behavior is proven. The current source installation is functional; no signed desktop installer or startup service is supplied.
 - Narrated demo: deferred; no narration generated or uploaded in this build.

@@ -37,7 +37,9 @@ The product is now **Observatory Switchboard**. Existing installations retain th
 - Local adapters for Codex JSONL, Claude Code JSONL, and Cursor Agent JSONL/text histories, plus an optional hook inbox.
 - Goals and latest updates as labeled local excerpts; user-pinned goals; source-message evidence.
 - Explicit Markdown checklists and supported structured plan events, with pending/in-progress/completed states.
-- Working, waiting, interrupted, error, idle, and stale observations. Review and human acceptance are stored separately.
+- A blue-forward board with prominent waiting-on-you flags. Explicit input/approval events, inferred reply requests, and stale evidence are labeled separately. Review and human acceptance are stored separately.
+- A Usage & skills tab with recorded token totals, cache reuse, history coverage, tool calls, skill invocation/reference evidence, and human-recorded corrections. Missing usage stays unknown; these are not account quotas or billing totals.
+- A follow-up composer with delivery receipts for eligible idle Codex conversations through the local CLI. Claude and Cursor currently support draft/copy only.
 - Human-recorded corrections grouped by skill revision and category. Local heuristics also suggest potential corrections for review.
 - Immutable imported evaluation suites, baseline/candidate comparison, required HTML checks, and JSON evidence export.
 - Optional model-backed synthetic training cases and a bounded, training-only candidate revision loop. The chosen candidate is evaluated on holdout cases once.
@@ -57,6 +59,14 @@ Claude's `local-agent-mode-sessions` folder is intentionally excluded: a discove
 No native hook settings are modified automatically. Histories are capped at the most recently modified 120 files per provider per scan. Large files use an initial segment plus a recent tail and are explicitly marked incomplete. Stale activity becomes unknown; absence of fresh events cannot prove a session is still running.
 
 The skill lab currently evaluates **skill text and HTML output** through a model API. It does not run full skill bundles inside Codex, Claude Code, or Cursor. Scripts, reference files, browser layout checks, visual judging, real human correction counts, and native-harness backtests require further integration. API results must not be presented as native-app certification. GEPA is not installed; the initial bounded proposal loop is implemented directly so the baseline can be measured before adding another optimizer.
+
+## Follow-ups and historical insights
+
+Open a session to draft a follow-up. Codex sending requires an installed `codex` on PATH (or an absolute `OBS_CODEX_BIN`), a valid existing conversation ID and project directory, and confirmation that the native conversation is idle. The app runs `codex exec --sandbox read-only --json resume <id> -`, passing the prompt on stdin. This is a CLI continuation, not live control of the desktop chat. Running turns and input/approval requests must be handled in the native app. No hooks or enforcement settings are changed. Existing configured native tools retain their own permission boundaries.
+
+The resumed context and prompt are handled by the configured Codex provider under its existing account and usage terms. The app stores prompts and bounded responses in the private profile. Repeated requests use an idempotency key; completion requires matching conversation acknowledgment and a completed-turn event. A failed or interrupted receipt can still mean delivery occurred, so check native history before resending. Runs have a ten-minute limit, not a token or dollar budget. This path has automated fixture coverage but has not been exercised against a live provider.
+
+Usage & skills filters by a session’s last activity, not the date each token was consumed. Codex cumulative usage records are deduplicated; Claude message usage is merged by message identity. Partial transcripts remain partial. A last-recorded model is not a per-model usage allocation. Skill tool invocations and file references are distinguished; neither proves compliance, per-skill token cost, or causal efficiency. Correction and acceptance metrics require human-recorded evidence.
 
 ## Skill lab
 
@@ -119,7 +129,7 @@ The bridge writes small local observation files and emits no model context, stdo
 
 ## Data and distribution
 
-Session observations, user feedback, suites, and reports live in the private local SQLite database outside the repository. Newly created application data directories use restricted filesystem permissions. This is not application-level encryption; use appropriate device protection for work data. Pausing a connection preserves observations. The API also supports explicitly forgetting a provider's collected sessions; source transcripts are never deleted.
+Session observations, follow-up prompts and receipts, user feedback, suites, and reports live in the private local SQLite database outside the repository. Newly created application data directories use restricted filesystem permissions. This is not application-level encryption; use appropriate device protection for work data. Pausing a connection preserves observations. The API also supports explicitly forgetting a provider's collected sessions; source transcripts are never deleted.
 
 Exported reports and Promptfoo drafts can contain full outputs, prompts, or skill text. The transcript token filter is best-effort and does not anonymize all personal or confidential content. Review exports before sharing. See [privacy boundaries and publication audit](docs/privacy.md).
 
@@ -129,6 +139,6 @@ The source is suitable for a clean GitHub repository: it contains application co
 
 ## Verification
 
-`npm run verify` typechecks, builds the UI, and runs the test suite. Tests cover parsers, plan states, correction signals, collector enrollment, review persistence, HTTP access boundaries, fail-closed checks, regression rejection, model budgets, holdout isolation, and synthetic-family handling. Tests use a local mock model server and incur no provider charges.
+`npm run verify` typechecks, builds the UI, and runs the test suite. Tests cover token deduplication, waiting flags, command destination/receipt guards, a local CLI process fixture, parsers, plan states, correction signals, collector enrollment, review persistence, HTTP access boundaries, fail-closed checks, regression rejection, model budgets, holdout isolation, and synthetic-family handling. Tests use a local mock model server and incur no provider charges.
 
 See [architecture](docs/architecture.md) and [remaining integration work](docs/remaining-work.md). MIT license applies to this project's original code; third-party dependencies retain their own licenses.

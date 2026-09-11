@@ -1,3 +1,5 @@
+import type { Telemetry } from './telemetry.ts';
+import type { Attention } from './attention.ts';
 export type Provider = 'codex' | 'claude' | 'cursor';
 export type Runtime =
   'working' | 'waiting_input' | 'waiting_approval' | 'idle' | 'interrupted' | 'error' | 'stale';
@@ -29,6 +31,8 @@ export type Session = {
   pinnedGoal?: string;
   correctionCount?: number;
   skill?: string;
+  telemetry?: Telemetry;
+  attention?: Attention | null;
 };
 export type Connection = {
   provider: Provider;

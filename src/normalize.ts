@@ -1,3 +1,4 @@
+import { transcriptTelemetry } from './telemetry.ts';
 import { createHash } from 'node:crypto';
 import { basename } from 'node:path';
 import type { Message, Provider, Runtime, Session, Task } from './types.ts';
@@ -105,6 +106,9 @@ export function parseTranscript(
         if (['task_complete', 'task_completed', 'turn_complete'].includes(p.type)) runtime = 'idle';
         if (['turn_aborted', 'task_interrupted'].includes(p.type)) runtime = 'interrupted';
         if (p.type === 'error') runtime = 'error';
+        if (['request_user_input', 'waiting_for_input'].includes(p.type)) runtime = 'waiting_input';
+        if (['approval_request', 'waiting_for_approval'].includes(p.type))
+          runtime = 'waiting_approval';
         if (p.type === 'user_message') add('user', p.message ?? '', at, id);
         if (p.type === 'agent_message') add('assistant', p.message ?? '', at, id);
       }
@@ -119,6 +123,12 @@ export function parseTranscript(
           readPlan(JSON.parse(p.arguments ?? p.input ?? '{}'), id);
         } catch {}
       }
+      if (
+        row.type === 'response_item' &&
+        p.type === 'function_call' &&
+        /(^|\.)request_user_input$/.test(p.name ?? '')
+      )
+        runtime = 'waiting_input';
       if (row.type === 'event_msg' && p.type === 'plan_updated') readPlan(p, id);
     } else {
       sourceId = row.sessionId ?? sourceId;
@@ -131,6 +141,12 @@ export function parseTranscript(
           if (block.type === 'tool_use' && block.name === 'TodoWrite') readPlan(block.input, id);
       if (provider === 'claude' && role === 'assistant')
         runtime = row.message?.stop_reason === 'end_turn' ? 'idle' : 'working';
+      if (
+        provider === 'claude' &&
+        Array.isArray(row.message?.content) &&
+        row.message.content.some((b: any) => b.type === 'tool_use' && b.name === 'AskUserQuestion')
+      )
+        runtime = 'waiting_input';
       if (role === 'user') runtime = 'working';
       if (row.type === 'turn_ended') runtime = row.status === 'error' ? 'error' : 'idle';
     }
@@ -168,6 +184,7 @@ export function parseTranscript(
     tasks,
     truncated,
     provenance: 'history',
+    telemetry: transcriptTelemetry(provider, text, truncated),
   };
 }
 export function effectiveRuntime(session: Session, now = Date.now()): Runtime {
@@ -269,6 +286,11 @@ export function normalizeHook(provider: Provider, event: any, prior?: Session): 
         ? 'waiting_approval'
         : 'waiting_input'
       : states[name];
+  if (
+    name === 'Notification' &&
+    !['permission_prompt', 'idle_prompt', 'elicitation_dialog'].includes(event.notification_type)
+  )
+    session.runtime = prior?.runtime ?? 'idle';
   session.updatedAt = at;
   session.provenance = 'hook';
   const raw =

@@ -1,6 +1,6 @@
 # Architecture
 
-The server uses Node HTTP and SQLite. The React interface is built by Vite and served from the same loopback origin. Runtime state and model credentials never enter the Git repository. Optional model access comes from the launching environment, not native application credential stores.
+The server uses Node HTTP and SQLite. The React interface is built by Vite and served from the same loopback origin. Runtime state and model credentials never enter the Git repository. Skill-lab model access comes from the launching environment. Optional Codex follow-ups invoke the installed CLI, which handles its own configured authentication.
 
 ```text
 Opted-in histories ───► Collector ───► SQLite ───► Session board
@@ -26,3 +26,5 @@ Imported suite ──► Frozen baseline + checks ──► Local artifact evalu
 The default local database is a single-machine, single-user profile. A second profile can run with a separate data directory and port. This is not a remotely accessible/team deployment. A future Mission Control embed or Observatory context connector is optional; the running application has no imports, processes, or schema dependencies on either project.
 
 Known bounds: transcript scans are not a complete process inventory; some native states are only available through hooks. Excerpts are not model-generated semantic summaries. Native chat links need application/version-specific proof. Skills with scripts, tools, or resource files require actual harness backtests before their behavior can be certified.
+
+`telemetry.ts` extracts recorded usage and skill evidence without executing transcript content. `attention.ts` preserves stale waiting evidence while separating inferred requests. `commands.ts` uses fixed argument arrays and stdin, session-version checks, per-session locks, idempotent request IDs, and conversation/turn acknowledgments. It records uncertain failures rather than asserting delivery. No runtime collection automatically launches a command.

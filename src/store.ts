@@ -32,7 +32,8 @@ export class Store {
       acceptedAt: old?.acceptedAt,
       pinnedGoal: old?.pinnedGoal,
       correctionCount: old?.correctionCount ?? 0,
-      skill: old?.skill,
+      skill: old?.skill ?? session.skill,
+      telemetry: session.telemetry ?? old?.telemetry,
     };
     if (old && session.truncated) {
       const messages = new Map(
@@ -87,6 +88,12 @@ export class Store {
       if (s.provider === provider) {
         this.db.prepare('DELETE FROM sessions WHERE id=?').run(s.id);
         this.db.prepare('DELETE FROM corrections WHERE session_id=?').run(s.id);
+        if (
+          this.db
+            .prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='commands'")
+            .get()
+        )
+          this.db.prepare('DELETE FROM commands WHERE session_id=?').run(s.id);
       }
   }
   correction(id: string, category: string, note: string, skill: string) {
